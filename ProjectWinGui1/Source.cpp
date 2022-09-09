@@ -24,7 +24,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	CreateWindow( wc.lpszClassName, TEXT("Revert"),WS_OVERLAPPEDWINDOW | WS_VISIBLE,50, 50, 800, 800, 0, 0, hInstance, 0);
 	while( GetMessage(&msg, NULL, 0, 0))
 	{
-		TranslateMessage(&msg);DispatchMessage(&msg);
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
 	}
 	return(int) msg.wParam;
 }
