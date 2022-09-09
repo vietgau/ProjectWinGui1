@@ -1,11 +1,16 @@
 #include "windows.h"
 
+#define Bnt 1
+#define Edit 2
+#define Checkbox 3
+
 HWND hwndBnt1;
 HWND hwndBnt2;
 HWND hwndCheckbox;
 HWND hwndEdit1;
 HWND hwndEdit2;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine, int nCmdShow )
 {
 	MSG msg ;
@@ -29,19 +34,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{ 
 		case WM_CREATE: 
 		{
-			hwndEdit1 = CreateWindow(TEXT("edit"), 0, WS_CHILD | WS_VISIBLE | WS_BORDER, 200, 250, 350, 30, hwnd, (HMENU)2, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
+			hwndEdit1 = CreateWindow(TEXT("edit"), 0, WS_CHILD | WS_VISIBLE | WS_BORDER, 200, 250, 350, 30, hwnd, (HMENU)Edit, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
 			SetFocus(hwndEdit1);
-			hwndEdit2 = CreateWindow(TEXT("edit"), 0, WS_CHILD | WS_VISIBLE | WS_BORDER, 200, 350, 350, 30, hwnd, (HMENU)2, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
+			hwndEdit2 = CreateWindow(TEXT("edit"), 0, WS_CHILD | WS_VISIBLE | WS_BORDER, 200, 350, 350, 30, hwnd, (HMENU)Edit, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
 			SendMessage(hwndEdit2, EM_SETREADONLY, TRUE, NULL);
-			hwndBnt1 = CreateWindow(TEXT("button"), TEXT("Revert"), WS_VISIBLE | WS_CHILD, 550, 650, 80, 25, hwnd, (HMENU)1, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
-			hwndBnt2 = CreateWindow(TEXT("button"), TEXT("Quit"), WS_VISIBLE | WS_CHILD, 650, 650, 80, 25, hwnd, (HMENU)1, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
-			hwndCheckbox = CreateWindow(TEXT("button"), TEXT("UP/DOWN Case"), WS_VISIBLE | WS_CHILD | BS_CHECKBOX, 270, 450, 185, 35, hwnd, (HMENU)3, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
-			CheckDlgButton(hwnd, 1, BST_CHECKED);
+			hwndBnt1 = CreateWindow(TEXT("button"), TEXT("Revert"), WS_VISIBLE | WS_CHILD, 550, 650, 80, 25, hwnd, (HMENU)Bnt, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
+			hwndBnt2 = CreateWindow(TEXT("button"), TEXT("Quit"), WS_VISIBLE | WS_CHILD, 650, 650, 80, 25, hwnd, (HMENU)Bnt, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
+			hwndCheckbox = CreateWindow(TEXT("button"), TEXT("UP/DOWN Case"), WS_VISIBLE | WS_CHILD | BS_CHECKBOX, 270, 450, 185, 35, hwnd, (HMENU)Checkbox, ((LPCREATESTRUCT)lParam)->hInstance, NULL);
+			CheckDlgButton(hwnd, Checkbox, BST_CHECKED);
+
 		break; 
 		}
 		case WM_COMMAND: 
 		{
-			if (lParam == (LPARAM)hwndBnt1)
+			BOOL check = IsDlgButtonChecked(hwnd, Checkbox);
+			if (lParam == (LPARAM)hwndBnt1 && check)
 			{ 
 				Beep(40, 50); 
 				MessageBox(NULL, (LPCWSTR)L"alo",(LPCWSTR)L"A",
@@ -60,3 +67,4 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam); 
 }
+
