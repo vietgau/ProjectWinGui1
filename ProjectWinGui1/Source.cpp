@@ -3,14 +3,15 @@
 #define Bnt 1
 #define Edit 2
 #define Checkbox 3
-
+#define MAXLENG 2056
 HWND hwndBnt1;
 HWND hwndBnt2;
 HWND hwndCheckbox;
 HWND hwndEdit1;
 HWND hwndEdit2;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-
+void ReverseText(wchar_t* text);
+void LowUpText(wchar_t* text);
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine, int nCmdShow )
 {
 	MSG msg ;
@@ -48,12 +49,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		case WM_COMMAND: 
 		{
+			static wchar_t stringText[MAXLENG + 1];
 			BOOL check = IsDlgButtonChecked(hwnd, Checkbox);
-			if (lParam == (LPARAM)hwndBnt1 && check)
+			if (lParam == (LPARAM)hwndBnt1 && !check)
 			{ 
-				Beep(40, 50); 
-				MessageBox(NULL, (LPCWSTR)L"alo",(LPCWSTR)L"A",
-				MB_ICONWARNING | MB_CANCELTRYCONTINUE | MB_DEFBUTTON2);
+				GetWindowTextW(hwndEdit1, stringText, MAXLENG);
+				ReverseText(stringText);
+				SetWindowTextW(hwndEdit2, stringText);
+				return 0;
+			}
+			else if(lParam == (LPARAM)hwndBnt1 && check)
+			{
+				GetWindowTextW(hwndEdit1, stringText, MAXLENG);
+				LowUpText(stringText);
+				ReverseText(stringText);
+				SetWindowTextW(hwndEdit2, stringText);
+				return 0;
 			}
 			if (lParam == (LPARAM)hwndBnt2)
 			{ 
@@ -68,4 +79,40 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam); 
 }
+void ReverseText(wchar_t* text)
+{
+	int leng, i;
+	wchar_t tempChar;
 
+	i = 0;
+	while (text[i] != 0)
+		i++;
+	leng = i;
+	for (i = 0; i < leng / 2; i++)
+	{
+		tempChar = text[i];
+		text[i] = text[leng - 1 - i];
+		text[leng - 1 - i] = tempChar;
+	}
+}
+void LowUpText(wchar_t* text)
+{
+	int leng, i;
+	i = 0;
+	while (text[i] != 0)
+		i++;
+	leng = i;
+	for (i = 0; i < leng; i++)
+	{
+		// lower
+		if (text[i]>=65 && text[i] <= 90)
+		{
+			text[i] = text[i] + 32;
+		}
+		//uper
+		else if (text[i] >= 97 && text[i] <= 122)
+		{
+			text[i] = text[i] - 32;
+		}
+	}
+}
